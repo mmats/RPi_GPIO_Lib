@@ -1,10 +1,3 @@
-/*
- * GPIO.h
- *
- *  Created on: 28.08.2013
- *      Author: mats
- */
-
 #ifndef GPIO_H_
 #define GPIO_H_
 

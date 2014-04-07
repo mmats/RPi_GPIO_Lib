@@ -1,10 +1,3 @@
-/*
- * GPIO.cpp
- *
- *  Created on: 28.08.2013
- *      Author: mats
- */
-
 #include "GPIO.h"
 
 #include <fstream>
