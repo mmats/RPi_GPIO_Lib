@@ -5,14 +5,18 @@
 #include <memory>
 #include <sstream>
 #include <string>
+#include <ctime>
+#include <chrono>
 
-GPIO::GPIO( int port, dir d ):
-		ioport(port), direction(d)
+GPIO::GPIO( int port, dir d, double debTime ):
+		ioport(port), direction(d), debouncingTime(debTime)
 {
 	closePort();
 	openPort();
 	setDirection(direction);
 	value = SPACE;
+	previousValue = value;
+	debouncingTimeStarted = false;
 }
 
 GPIO::~GPIO()
@@ -94,6 +98,41 @@ bit GPIO::getValue()
 			value = SPACE;
 	}
 	return value;
+}
+
+bit GPIO::getDebouncedValue()
+{
+	bit actualValue = getValue();
+	if( actualValue != previousValue )
+	{
+		if( !debouncingTimeStarted )
+		{
+			start = std::chrono::system_clock::now();
+			debouncingTimeStarted = true;
+		}
+		else
+		{
+			end = std::chrono::system_clock::now();
+		}
+		elapsed_time = end-start;
+		if( elapsed_time.count() >= debouncingTime )
+		{
+			previousValue = actualValue;
+		}
+	}
+	else
+	{
+		debouncingTimeStarted = false;
+	}
+	return previousValue;
+}
+
+void GPIO::setDebouncingTime(double debTime)
+{
+	if( debTime < 0.0 )
+		debouncingTime = 0.0;
+	else
+		debouncingTime = debTime;
 }
 
 std::string GPIO::toString(const int &i)

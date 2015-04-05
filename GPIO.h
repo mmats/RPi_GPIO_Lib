@@ -2,6 +2,8 @@
 #define GPIO_H_
 
 #include <iosfwd>
+#include <ctime>
+#include <chrono>
 
 enum bit{
 	SPACE = 0,
@@ -16,7 +18,7 @@ enum dir{
 class GPIO
 {
 public:
-	GPIO( int port, enum dir=OUT );
+	GPIO( int port, enum dir=OUT, double debTime=0.0 );
 	~GPIO();
 
 	void setDirection( dir d );
@@ -42,6 +44,19 @@ public:
 	 *
 	 * Linux command is:
 	 * cat /sys/class/gpio/gpio4/value
+	 */
+
+	void setDebouncingTime( double debTime );
+	/**
+	 * sets the time the output has to be
+	 * stable to cause a change
+	 */
+
+	bit getDebouncedValue();
+	/**
+	 * gets the GPIOx value,
+	 * but only if it was stable for
+	 * a certain amount of time
 	 */
 
 private:
@@ -74,6 +89,11 @@ private:
 	int ioport;
 	dir direction;
 	bit value;
+	bit previousValue;
+	double debouncingTime;
+	std::chrono::time_point<std::chrono::system_clock> start, end;
+	std::chrono::duration<double> elapsed_time;
+	bool debouncingTimeStarted;
 };
 
 #endif /* GPIO_H_ */
