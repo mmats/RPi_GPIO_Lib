@@ -14,7 +14,7 @@ GPIO::GPIO( int port, dir_t dir, double debTime ):
 	closePort();
 	openPort();
 	setDirection(direction);
-	value = SPACE;
+	value = MARK;
 	previousValue = value;
 	debouncingTimeStarted = false;
 }
