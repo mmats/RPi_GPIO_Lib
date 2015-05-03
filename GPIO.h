@@ -5,23 +5,23 @@
 #include <ctime>
 #include <chrono>
 
-enum bit{
+typedef enum{
 	SPACE = 0,
 	MARK  = 1
-};
+}bit_t;
 
-enum dir{
+typedef enum{
 	IN,
 	OUT
-};
+}dir_t;
 
 class GPIO
 {
 public:
-	GPIO( int port, enum dir=OUT, double debTime=0.0 );
+	GPIO( int port, dir_t dir=OUT, double debTime=0.0 );
 	~GPIO();
 
-	void setDirection( dir d );
+	void setDirection( dir_t d );
 	/**
 	 * sets the direction (input or output
 	 *
@@ -29,7 +29,7 @@ public:
 	 * echo "out" > /sys/class/gpio/gpio4/direction
 	 */
 
-	void setValue( bit val );
+	void setValue( bit_t val );
 	void setValue( int i );
 	/**
 	 * sets a GPIOx to 1 or 0
@@ -38,7 +38,7 @@ public:
 	 * echo "1" > /sys/class/gpio/gpio4/value
 	 */
 
-	bit getValue();
+	bit_t getValue();
 	/**
 	 * gets the GPIOx value
 	 *
@@ -52,7 +52,7 @@ public:
 	 * stable to cause a change
 	 */
 
-	bit getDebouncedValue();
+	bit_t getDebouncedValue();
 	/**
 	 * gets the GPIOx value,
 	 * but only if it was stable for
@@ -87,10 +87,10 @@ private:
 	 */
 
 	int ioport;
-	dir direction;
-	bit value;
-	bit previousValue;
+	dir_t direction;
 	double debouncingTime;
+	bit_t value;
+	bit_t previousValue;
 	std::chrono::time_point<std::chrono::system_clock> start, end;
 	std::chrono::duration<double> elapsed_time;
 	bool debouncingTimeStarted;

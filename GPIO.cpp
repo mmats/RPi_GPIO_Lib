@@ -8,8 +8,8 @@
 #include <ctime>
 #include <chrono>
 
-GPIO::GPIO( int port, dir d, double debTime ):
-		ioport(port), direction(d), debouncingTime(debTime)
+GPIO::GPIO( int port, dir_t dir, double debTime ):
+	ioport(port), direction(dir), debouncingTime(debTime)
 {
 	closePort();
 	openPort();
@@ -42,7 +42,7 @@ void GPIO::closePort() const
 	fs.close();
 }
 
-void GPIO::setDirection( dir d )
+void GPIO::setDirection( dir_t d )
 {
 	direction = d;
 	std::string sFile = "/sys/class/gpio/gpio" + toString(ioport) + "/direction";
@@ -67,7 +67,7 @@ void GPIO::setValue( int i )
 	}
 }
 
-void GPIO::setValue( bit val )
+void GPIO::setValue( bit_t val )
 {
 	value = val;
 	std::string sFile = "/sys/class/gpio/gpio" + toString(ioport) + "/value";
@@ -81,7 +81,7 @@ void GPIO::setValue( bit val )
 	fs.close();
 }
 
-bit GPIO::getValue()
+bit_t GPIO::getValue()
 {
 	if( direction == IN)
 	{
@@ -100,9 +100,9 @@ bit GPIO::getValue()
 	return value;
 }
 
-bit GPIO::getDebouncedValue()
+bit_t GPIO::getDebouncedValue()
 {
-	bit actualValue = getValue();
+	bit_t actualValue = getValue();
 	if( actualValue != previousValue )
 	{
 		if( !debouncingTimeStarted )
