@@ -90,7 +90,6 @@ private:
 	dir_t direction;
 	double debouncingTime;
 	bit_t value;
-	bit_t previousValue;
 	std::chrono::time_point<std::chrono::system_clock> start, end;
 	std::chrono::duration<double> elapsed_time;
 	bool debouncingTimeStarted;

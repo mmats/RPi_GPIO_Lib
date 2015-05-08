@@ -15,7 +15,6 @@ GPIO::GPIO( int port, dir_t dir, double debTime ):
 	openPort();
 	setDirection(direction);
 	value = MARK;
-	previousValue = value;
 	debouncingTimeStarted = false;
 }
 
@@ -103,6 +102,8 @@ bit_t GPIO::getValue()
 bit_t GPIO::getDebouncedValue()
 {
 	bit_t actualValue = getValue();
+	static bit_t previousValue = actualValue;
+
 	if( actualValue != previousValue )
 	{
 		if( !debouncingTimeStarted )
@@ -113,17 +114,20 @@ bit_t GPIO::getDebouncedValue()
 		else
 		{
 			end = std::chrono::system_clock::now();
-		}
-		elapsed_time = end-start;
-		if( elapsed_time.count() >= debouncingTime )
-		{
-			previousValue = actualValue;
+			elapsed_time = end-start;
+			if( elapsed_time.count() >= debouncingTime )
+			{
+				previousValue = actualValue;
+				debouncingTimeStarted = false;
+				return actualValue;
+			}
 		}
 	}
 	else
 	{
 		debouncingTimeStarted = false;
 	}
+
 	return previousValue;
 }
 
@@ -141,13 +145,3 @@ std::string GPIO::toString(const int &i)
 	stream << i;
 	return stream.str();
 }
-
-/*
-int GPIO::fromString(const std::string &s)
-{
-	std::istringstream stream (s);
-	int t;
-	stream >> t;
-	return t;
-}
-*/
